@@ -16,12 +16,19 @@ class SubjectController extends Controller
     {
         $request->validate([
             'grade' => 'required|integer', // Validate that 'grade' is required and must be an integer
+            'classType'=>'required',
         ]);
 
         try {
+            if($request->input('classType') == 'free'){
+                $classType = 'Free';
+            }else{
+                $classType = 'Online';
+            }
             // Retrieve the grade with its related subjects
-            $grade = Grade::with('subjects')->findOrFail($request->input('grade'));
-            
+           $grade = Grade::with(['subjects' => function ($query) use ($classType) {
+                $query->where('class_type', $classType);
+            }])->findOrFail($request->input('grade'));
             // Return a successful response with the grade and its subjects
             return response()->json([
                 'data' => $grade->subjects, // Assuming 'subjects' is the relationship method in your Grade model

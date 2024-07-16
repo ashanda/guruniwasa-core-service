@@ -44,7 +44,12 @@ class GradeController extends Controller
      */
     public function show(Grade $grade)
     {
-        //
+         try {
+            $data = Grade::findOrFail($grade->id);
+            return $this->responseSuccess($data, 'Requested Grade.', 200);
+        } catch (Exception $exception) {
+            return $this->responseError([], $exception->getMessage(), 400);
+        }
     }
 
     /**
