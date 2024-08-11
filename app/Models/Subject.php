@@ -33,4 +33,9 @@ class Subject extends Model
     {
         return $this->belongsTo(Grade::class, 'gid', 'id');
     }
+
+    public function videoRecords()
+    {
+        return $this->hasMany(VideoRecord::class,'subject_id','id');
+    }
 }
