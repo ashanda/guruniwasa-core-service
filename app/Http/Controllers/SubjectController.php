@@ -103,18 +103,22 @@ class SubjectController extends Controller
      * Display the specified resource.
      */
     public function show(Subject $subject)
-    {
-        try {
-            return response()->json([
-                'data' => $subject,
-                'message' => 'Subject details retrieved successfully.',
-            ], 200);
-        } catch (Exception $exception) {
-            return response()->json([
-                'error' => $exception->getMessage(),
-            ], 400);
+        {
+            try {
+                // Load the grade relationship if it exists
+                $subject->load('grade');
+
+                return response()->json([
+                    'data' => $subject,
+                    'grade' => $subject->grade,  // Include the grade data
+                    'message' => 'Subject details retrieved successfully.',
+                ], 200);
+            } catch (Exception $exception) {
+                return response()->json([
+                    'error' => $exception->getMessage(),
+                ], 400);
+            }
         }
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -246,6 +250,79 @@ class SubjectController extends Controller
 
 
 
+public function TeacherSubjects(Request $request){
+    try {
+    $request->validate([
+        'teacher_id' => 'required',
+    ]);
+    
+
+
+    
+    $subjectIds = $request->input('subject_id');
+    if (!is_array($subjectIds)) {
+            return response()->json(['error' => 'subject_id must be an array'], 400);
+        }
+    
+    $classSubjects = Subject::whereIn('id', $subjectIds)->select('id', 'sname', 'gid', 'class_type') ->with('grade') ->get();
+ 
+            return response()->json([
+                'status' => 200,
+                'message' => 'teacher_id related subject retrieved successfully',
+                'data' => [
+                    'teacher_subjects' => $classSubjects,
+
+                ],
+            ], 200);
+
+        } catch (Exception $exception) {
+            return response()->json([
+                'status' => 400,
+                'message' => $exception->getMessage(),
+                'data' => [],
+            ], 400);
+        } 
+}
+
+public function studentSubjects(Request $request){
+    try {
+
+
+    $request->validate([
+        
+        'subject_id' => 'required',
+    ]);
+    
+
+
+    
+    $subjectIds = $request->input('subject_id');
+
+    if (is_array($subjectIds)) {
+
+            return response()->json(['error' => 'subject_id must be an array'], 400);
+        }
+    
+    $classSubjects = Subject::where('id', $subjectIds)->select('id', 'sname', 'gid','tid', 'class_type') ->with('grade') ->first();
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'student related subject retrieved successfully',
+                'data' => [
+                    'student_subjects' => $classSubjects,
+
+                ],
+            ], 200);
+
+        } catch (Exception $exception) {
+            return response()->json([
+                'status' => 400,
+                'message' => $exception->getMessage(),
+                'data' => [],
+            ], 400);
+        } 
+
+}
 
 
 }
