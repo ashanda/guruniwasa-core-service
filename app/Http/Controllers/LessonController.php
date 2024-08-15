@@ -226,6 +226,7 @@ public function schedule(Request $request)
                 'lesson_title' => $lesson->lesson_title,
                 'video_url1' => '', // Set default or leave empty
                 'video_url2' => '', // Set default or leave empty
+                'video_thumb' => '', // Set default or leave empty
                 'status' => 'Still Not Added', // Set status to Still Not Added
             ]);
             }

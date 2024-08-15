@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\ClassTuteController;
 use App\Http\Controllers\PaymentCategoryController;
 use App\Http\Controllers\ReceiptCategoryController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\IncomeTaxPaymentController;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\NotePaperController;
 use App\Http\Controllers\ScheduledLessonController;
 use App\Http\Controllers\SmsController;
 use App\Http\Controllers\SubjectController;
@@ -45,6 +47,7 @@ Route::middleware(['check.apikey'])->group(function () {
     Route::resource('taxpayments', TaxPaymentController::class);
 
     Route::post('/get-subject', [SubjectController::class, 'getSubjects']);
+    Route::get('/student-subject', [SubjectController::class, 'studentSubjects']);
 
     Route::post('incometaxpayments/{id}/restore', [IncomeTaxPaymentController::class, 'restore'])->name('incometaxpayments.restore');
     Route::resource('incometaxpayments', IncomeTaxPaymentController::class);
@@ -65,8 +68,27 @@ Route::middleware(['check.apikey'])->group(function () {
     Route::put('/video-recordings/{id}', [VideoRecordController::class, 'update']);
     Route::delete('video-recordings/{id}', [VideoRecordController::class, 'delete']);
 
+    Route::get('/class-tute-books', [ClassTuteController::class, 'index']);
+
+
+    Route::get('/class-tutes-teacher', [ClassTuteController::class, 'Teacherindex']);
+    Route::post('/class-tutes-store', [ClassTuteController::class, 'TeacherStore']);
+    Route::delete('/class-tutes-destroy/{id}', [ClassTuteController::class, 'TeacherDestroy']);
+    
+
     Route::post('auto-schedule', [LessonController::class, 'autoSchedule']);
     Route::post('/send-sms', [SmsController::class, 'loginAndSendSms']);
+
+
+
+    Route::get('/teacher-subject', [SubjectController::class, 'TeacherSubjects']);
+
+
+    Route::get('class-notes-list', [NotePaperController::class, 'index']);
+    Route::post('class-notes-store', [NotePaperController::class, 'store']);
+    Route::put('class-notes-update/{notePaper}', [NotePaperController::class, 'update']);
+    Route::delete('class-notes-destroy/{notePaper}', [NotePaperController::class, 'destroy']);
+
 }); 
 
 //Route::resource('/subjects', [SubjectController::class, 'index'])->middleware('check.apikey');

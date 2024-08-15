@@ -38,4 +38,11 @@ class Subject extends Model
     {
         return $this->hasMany(VideoRecord::class,'subject_id','id');
     }
+
+    public function classtutes()
+    {
+        return $this->hasMany(Classtute::class, 'subject_id');
+    }
+
+    
 }
