@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ClassPaperController;
 use App\Http\Controllers\ClassTuteController;
 use App\Http\Controllers\PaymentCategoryController;
 use App\Http\Controllers\ReceiptCategoryController;
@@ -74,6 +75,13 @@ Route::middleware(['check.apikey'])->group(function () {
     Route::get('/class-tutes-teacher', [ClassTuteController::class, 'Teacherindex']);
     Route::post('/class-tutes-store', [ClassTuteController::class, 'TeacherStore']);
     Route::delete('/class-tutes-destroy/{id}', [ClassTuteController::class, 'TeacherDestroy']);
+
+
+    Route::get('/class-papers-teacher', [ClassPaperController::class, 'Teacherindex']);
+    Route::post('/class-papers-store', [ClassPaperController::class, 'TeacherStore']);
+    Route::delete('/class-papers-destroy/{id}', [ClassPaperController::class, 'TeacherDestroy']);
+
+    
     
 
     Route::post('auto-schedule', [LessonController::class, 'autoSchedule']);
@@ -84,11 +92,17 @@ Route::middleware(['check.apikey'])->group(function () {
     Route::get('/teacher-subject', [SubjectController::class, 'TeacherSubjects']);
 
 
-    Route::get('class-notes-list', [NotePaperController::class, 'index']);
+    Route::get('class-notes-list-teacher', [NotePaperController::class, 'index']);
+    Route::get('class-notes-count', [NotePaperController::class, 'ClassNotecount']);
     Route::post('class-notes-store', [NotePaperController::class, 'store']);
     Route::put('class-notes-update/{notePaper}', [NotePaperController::class, 'update']);
     Route::delete('class-notes-destroy/{notePaper}', [NotePaperController::class, 'destroy']);
+    Route::get('/class-notes-list', [NotePaperController::class, 'Studentindex']);
 
+    Route::post('/class-notes-upload', [NotePaperController::class, 'Noteupload']);
+
+
+    Route::get('/class-papers', [ClassPaperController::class, 'index']);
 }); 
 
 //Route::resource('/subjects', [SubjectController::class, 'index'])->middleware('check.apikey');
