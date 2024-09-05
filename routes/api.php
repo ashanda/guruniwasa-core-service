@@ -10,10 +10,14 @@ use App\Http\Controllers\LessonController;
 use App\Http\Controllers\NotePaperController;
 use App\Http\Controllers\ScheduledLessonController;
 use App\Http\Controllers\SmsController;
+use App\Http\Controllers\StudentAttendenceController;
+use App\Http\Controllers\StudentCertificateController;
+use App\Http\Controllers\StudenttermTestController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TaxPaymentController;
 use App\Http\Controllers\VideoRecordController;
 use App\Models\Lesson;
+use App\Models\StudentCertificate;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +53,14 @@ Route::middleware(['check.apikey'])->group(function () {
 
     Route::post('/get-subject', [SubjectController::class, 'getSubjects']);
     Route::get('/student-subject', [SubjectController::class, 'studentSubjects']);
+    Route::get('/student-subject-term', [SubjectController::class, 'studentSubjectsTerm']);
+
+    Route::get('/student-certificate', [StudentCertificateController::class, 'studentCertificate']);
+    Route::post('/student-certificate-upload', [StudentCertificateController::class, 'studentCertificateUpload']);
+
+    Route::post('/attendence', [StudentAttendenceController::class, 'StudentAttendence']);
+    Route::get('/student-attendances-data', [StudentAttendenceController::class, 'StudentAttendenceData']);
+    
 
     Route::post('incometaxpayments/{id}/restore', [IncomeTaxPaymentController::class, 'restore'])->name('incometaxpayments.restore');
     Route::resource('incometaxpayments', IncomeTaxPaymentController::class);
@@ -103,6 +115,17 @@ Route::middleware(['check.apikey'])->group(function () {
 
 
     Route::get('/class-papers', [ClassPaperController::class, 'index']);
+
+    Route::post('/term-test-upload', [StudenttermTestController::class, 'store']);
+
+
+    Route::get('/student-subjects-grade-related', [SubjectController::class, 'studentSubjectGradeRelated']);
+
+
+
+    route::get('/single-grade', [GradeController::class, 'singleGrade']);
+    route::get('/single-subject', [SubjectController::class, 'singleSubject']);
+    
 }); 
 
 //Route::resource('/subjects', [SubjectController::class, 'index'])->middleware('check.apikey');

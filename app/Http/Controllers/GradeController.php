@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Grade;
+use App\Models\Subject;
 use App\Traits\ResponseTrait;
 use Exception;
 use Illuminate\Http\Request;
@@ -107,4 +108,20 @@ class GradeController extends Controller
             return $this->responseError([], $exception->getMessage(), 400);
         }
     }
+
+    public function singleGrade(Request $request){
+
+        $request->validate([
+            'grade_id' => 'required',
+        ]);
+        $data = Grade::where('id', $request->grade_id)->first();
+        return response()->json([
+                'status' => 200,
+                'message' => 'Requested Grade.',
+                'grade' => $data,
+            ], 200);
+ 
+    }
+
+    
 }

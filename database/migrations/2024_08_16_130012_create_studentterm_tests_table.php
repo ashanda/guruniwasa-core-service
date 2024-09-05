@@ -15,12 +15,14 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('student_id');
             $table->bigInteger('subject_id');
-            $table->string('first_term_paper');
-            $table->string('first_term_mark');
-            $table->string('second_term_paper');
-            $table->string('second_term_mark');
-            $table->string('third_term_paper');
-            $table->string('third_term_mark');
+            $table->bigInteger('teacher_id');
+            $table->bigInteger('grade_id');
+            $table->string('first_term')->nullable();
+            $table->string('first_marks')->nullable();
+            $table->string('second_term')->nullable();
+            $table->string('second_marks')->nullable();
+            $table->string('third_term')->nullable();
+            $table->string('third_marks')->nullable();
             $table->timestamps();
         });
     }
