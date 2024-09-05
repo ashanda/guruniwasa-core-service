@@ -5,32 +5,29 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class NotePaper extends Model
+class StudentNote extends Model
 {
     use HasFactory;
-     protected $fillable = [
+    protected $fillable = [
+        'note_id',
+        'student_id',
+        'grade_id',
         'subject_id',
         'teacher_id',
-        'grade_id',
-        'title',
-        'directory'
+        'directory',
+        'status',
     ];
 
 
-    public function grade()
-    {
-        return $this->belongsTo(Grade::class);
-    }
 
     public function subject()
     {
         return $this->belongsTo(Subject::class);
     }
 
-    public function studentUploads()
-    {
-        return $this->hasMany(StudentNote::class, 'note_id');
-    }
 
-    
+    public function grade()
+    {
+        return $this->belongsTo(Grade::class);
+    }
 }

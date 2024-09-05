@@ -44,5 +44,10 @@ class Subject extends Model
         return $this->hasMany(Classtute::class, 'subject_id');
     }
 
+    public function term(){
+
+        return $this->belongsTo(StudenttermTest::class,'id','subject_id');
+    }
+
     
 }

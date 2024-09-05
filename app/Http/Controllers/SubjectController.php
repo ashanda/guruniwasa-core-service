@@ -303,7 +303,7 @@ public function studentSubjects(Request $request){
             return response()->json(['error' => 'subject_id must be an array'], 400);
         }
     
-    $classSubjects = Subject::where('id', $subjectIds)->select('id', 'sname', 'gid','tid', 'class_type') ->with('grade') ->first();
+    $classSubjects = Subject::where('id', $subjectIds)->select('id', 'sname', 'gid','tid', 'class_type','fee') ->with('grade') ->first();
 
             return response()->json([
                 'status' => 200,
@@ -324,5 +324,83 @@ public function studentSubjects(Request $request){
 
 }
 
+
+public function studentSubjectsTerm(Request $request){
+    try {
+
+
+    $request->validate([
+        
+        'subject_id' => 'required',
+    ]);
+    
+
+
+    
+    $subjectIds = $request->input('subject_id');
+
+    if (is_array($subjectIds)) {
+
+            return response()->json(['error' => 'subject_id must be an array'], 400);
+        }
+    
+    $classSubjects = Subject::where('id', $subjectIds)->select('id', 'sname', 'gid','tid', 'class_type') ->with('grade')->with('term') ->first();
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'student related subject retrieved successfully',
+                'data' => [
+                    'student_subjects' => $classSubjects,
+
+                ],
+            ], 200);
+
+        } catch (Exception $exception) {
+            return response()->json([
+                'status' => 400,
+                'message' => $exception->getMessage(),
+                'data' => [],
+            ], 400);
+        } 
+
+}
+
+public function studentSubjectGradeRelated(Request $request){
+
+    $request->validate([
+        'grade_id' => 'required',
+    ]);
+
+    $grade_id = $request->input('grade_id');
+    try {
+        $subjects = Subject::where('gid', $grade_id)->with('grade')->get();
+        return response()->json([
+            'status' => 200,
+            'message' => 'subjects retrieved successfully',
+            'data' => [
+                'subjects' => $subjects,
+            ],
+        ], 200);
+    } catch (Exception $exception) {
+        return response()->json([
+            'status' => 400,
+            'message' => $exception->getMessage(),
+            'data' => [],
+        ], 400);
+    }
+}
+
+public function singleSubject(Request $request){
+
+        $request->validate([
+            'subject_id' => 'required',
+        ]);
+        $data = Subject::where('id', $request->subject_id)->first();
+        return response()->json([
+                'status' => 200,
+                'message' => 'Requested Subject.',
+                'data' => $data,
+            ], 200);
+    }
 
 }
