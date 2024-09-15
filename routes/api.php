@@ -126,6 +126,8 @@ Route::middleware(['check.apikey'])->group(function () {
     route::get('/single-grade', [GradeController::class, 'singleGrade']);
     route::get('/single-subject', [SubjectController::class, 'singleSubject']);
     
+    
+    
 }); 
 
 //Route::resource('/subjects', [SubjectController::class, 'index'])->middleware('check.apikey');
