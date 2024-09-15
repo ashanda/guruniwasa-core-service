@@ -33,4 +33,21 @@ class Subject extends Model
     {
         return $this->belongsTo(Grade::class, 'gid', 'id');
     }
+
+    public function videoRecords()
+    {
+        return $this->hasMany(VideoRecord::class,'subject_id','id');
+    }
+
+    public function classtutes()
+    {
+        return $this->hasMany(Classtute::class, 'subject_id');
+    }
+
+    public function term(){
+
+        return $this->belongsTo(StudenttermTest::class,'id','subject_id');
+    }
+
+    
 }

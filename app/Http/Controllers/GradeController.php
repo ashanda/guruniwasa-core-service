@@ -1,8 +1,8 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Grade;
+use App\Models\Subject;
 use App\Traits\ResponseTrait;
 use Exception;
 use Illuminate\Http\Request;
@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 class GradeController extends Controller
 {
     use ResponseTrait;
+
     /**
      * Display a listing of the resource.
      */
@@ -28,7 +29,9 @@ class GradeController extends Controller
      */
     public function create()
     {
-        //
+        // If using a view to create a grade, return it here
+        // return view('grades.create');
+        return $this->responseSuccess([], 'Create form loaded.', 200);
     }
 
     /**
@@ -36,7 +39,16 @@ class GradeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $request->validate([
+                'gname' => 'required',
+            ]);
+
+            $grade = Grade::create($request->all());
+            return $this->responseSuccess($grade, 'Grade created successfully.', 201);
+        } catch (Exception $exception) {
+            return $this->responseError([], $exception->getMessage(), 400);
+        }
     }
 
     /**
@@ -44,7 +56,12 @@ class GradeController extends Controller
      */
     public function show(Grade $grade)
     {
-        //
+        try {
+            $data = Grade::findOrFail($grade->id);
+            return $this->responseSuccess($data, 'Requested Grade.', 200);
+        } catch (Exception $exception) {
+            return $this->responseError([], $exception->getMessage(), 400);
+        }
     }
 
     /**
@@ -52,7 +69,14 @@ class GradeController extends Controller
      */
     public function edit(Grade $grade)
     {
-        //
+        try {
+            $data = Grade::findOrFail($grade->id);
+            // If using a view to edit a grade, return it here
+            // return view('grades.edit', compact('grade'));
+            return $this->responseSuccess($data, 'Edit form loaded.', 200);
+        } catch (Exception $exception) {
+            return $this->responseError([], $exception->getMessage(), 400);
+        }
     }
 
     /**
@@ -60,7 +84,16 @@ class GradeController extends Controller
      */
     public function update(Request $request, Grade $grade)
     {
-        //
+        try {
+            $request->validate([
+                'gname' => 'required',
+            ]);
+
+            $grade->update($request->all());
+            return $this->responseSuccess($grade, 'Grade updated successfully.', 200);
+        } catch (Exception $exception) {
+            return $this->responseError([], $exception->getMessage(), 400);
+        }
     }
 
     /**
@@ -68,6 +101,27 @@ class GradeController extends Controller
      */
     public function destroy(Grade $grade)
     {
-        //
+        try {
+            $grade->delete();
+            return $this->responseSuccess([], 'Grade deleted successfully.', 200);
+        } catch (Exception $exception) {
+            return $this->responseError([], $exception->getMessage(), 400);
+        }
     }
+
+    public function singleGrade(Request $request){
+
+        $request->validate([
+            'grade_id' => 'required',
+        ]);
+        $data = Grade::where('id', $request->grade_id)->first();
+        return response()->json([
+                'status' => 200,
+                'message' => 'Requested Grade.',
+                'grade' => $data,
+            ], 200);
+ 
+    }
+
+    
 }

@@ -16,4 +16,9 @@ class Grade extends Model
     {
         return $this->hasMany(Subject::class, 'gid', 'id');
     }
+
+     public function videoRecords()
+    {
+        return $this->hasMany(VideoRecord::class,'grade_id','id');
+    }
 }
