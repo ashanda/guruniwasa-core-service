@@ -62,42 +62,131 @@ class SubjectController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        try {
-            $request->validate([
-                'gid' => 'required|exists:grades,id',
-                'sname' => 'required|string|max:255',
-                'fee' => 'required|numeric',
-                'fees_valid_period' => 'required|date',
-                'whats_app' => 'nullable|string',
-                'class_type' => 'required|string',
-                'day_normal' => 'nullable|string',
-                'start_normal' => 'nullable|string',
-                'end_normal' => 'nullable|string',
-                'day_extra1' => 'nullable|string',
-                'start_extra1' => 'nullable|string',
-                'end_extra1' => 'nullable|string',
-                'day_extra1_status' => 'nullable|boolean',
-                'day_extra2' => 'nullable|string',
-                'start_extra2' => 'nullable|string',
-                'end_extra2' => 'nullable|string',
-                'day_extra2_status' => 'nullable|boolean',
-                'status' => 'required|boolean',
-            ]);
+    public function CreateSubject(Request $request){
+    
+    try {
+        // Validate request data
+        
 
-            $subject = Subject::create($request->all());
+        //Log::info($request->all());
+        // Create the subject
+        $subject = Subject::create([
+            'gid' => $request->gid,
+            'tid' => $request->tid,
+            'sname' => $request->sname,
+            'fee' => $request->fee,
+            'retention' => $request->retention,
+            'whats_app' => $request->whats_app,
+            'class_type' => $request->class_type,
+            'day_normal' => $request->day_normal,
+            'start_normal' => $request->start_normal,
+            'end_normal' => $request->end_normal,
+            'day_extra1' => $request->day_extra1,
+            'end_extra1' => $request->end_extra1,
+            'day_extra2' => $request->day_extra2,
+            'start_extra2' => $request->start_extra2,
+            'end_extra2' => $request->end_extra2,
+        ]);
+        
+        // Fetch all subject IDs related to the provided 'tid'
+        $relatedSubjectIds = Subject::where('tid', $request->tid)->pluck('id');
+        Log::info($relatedSubjectIds);
+        // Return the created subject and related subject IDs
+        return response()->json([
+            'data' => $subject,
+            'related_subject_ids' => $relatedSubjectIds,  // Return the list of related IDs
+            'message' => 'Subject created successfully.',
+        ], 200);
 
-            return response()->json([
-                'data' => $subject,
-                'message' => 'Subject created successfully.',
-            ], 201);
-        } catch (Exception $exception) {
-            return response()->json([
-                'error' => $exception->getMessage(),
-            ], 400);
-        }
+    } catch (\Exception $exception) {
+        // Handle any exceptions
+        return response()->json([
+            'error' => $exception->getMessage(),
+        ], 400);
     }
+}
+
+
+
+public function UpdateSubject(Request $request)
+{
+    try {
+        // Validate request data
+        // You can add validation here as needed
+
+        // Find the subject by 'sid'
+        $subject = Subject::where('id', $request->sid)->first();
+
+        // Check if subject exists
+        if (!$subject) {
+            return response()->json([
+                'message' => 'Subject not found.',
+            ], 404);
+        }
+
+        // Update the subject fields
+        $subject->update([
+            'sname' => $request->sname,
+            'fee' => $request->fee,
+            'retention' => $request->retention,
+            'whats_app' => $request->whats_app,
+            'class_type' => $request->class_type,
+            'day_normal' => $request->day_normal,
+            'start_normal' => $request->start_normal,
+            'end_normal' => $request->end_normal,
+            'day_extra1' => $request->day_extra1,
+            'end_extra1' => $request->end_extra1,
+            'day_extra2' => $request->day_extra2,
+            'start_extra2' => $request->start_extra2,
+            'end_extra2' => $request->end_extra2,
+        ]);
+
+        // Fetch all subject IDs related to the provided 'tid'
+        $relatedSubjectIds = Subject::where('tid', $request->tid)->pluck('id');
+
+        // Return the updated subject and related subject IDs
+        return response()->json([
+            'data' => $subject,
+            'related_subject_ids' => $relatedSubjectIds,  // Return the list of related IDs
+            'message' => 'Subject updated successfully.',
+        ], 200);
+
+    } catch (\Exception $exception) {
+        // Handle any exceptions
+        return response()->json([
+            'error' => $exception->getMessage(),
+        ], 400);
+    }
+}
+
+
+public function DeleteSubject(Request $request){
+    
+    try {
+        // Find the subject by 'sid'
+        $subject = Subject::where('id', $request->sid)->first();
+
+        // Check if subject exists
+        if (!$subject) {
+            return response()->json([
+                'message' => 'Subject not found.',
+            ], 404);
+        }
+
+        // Perform soft delete
+        $subject->delete();
+
+        return response()->json([
+            'message' => 'Subject soft deleted successfully.',
+        ], 200);
+
+    } catch (\Exception $exception) {
+        Log::info($exception->getMessage());
+        return response()->json([
+            'error' => $exception->getMessage(),
+        ], 400);
+    }
+}
 
     /**
      * Display the specified resource.
@@ -402,5 +491,20 @@ public function singleSubject(Request $request){
                 'data' => $data,
             ], 200);
     }
+
+
+ public function gradeWiseSubjects(Request $request){
+
+    $request->validate([
+        'grade_id' => 'required',
+    ]);
+    $data = Subject::where('gid', $request->grade_id)->get();
+  
+    return response()->json([
+            'status' => 200,
+            'message' => 'Requested Subject.',
+            'data' => $data,
+        ], 200);
+ }   
 
 }

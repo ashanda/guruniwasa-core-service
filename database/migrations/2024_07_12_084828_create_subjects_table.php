@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('tid');
             $table->string('sname');
             $table->string('fee');
+            $table->string('retention');
             $table->integer('fees_valid_period')->default(45);
             $table->string('whats_app');
             $table->string('class_type');
