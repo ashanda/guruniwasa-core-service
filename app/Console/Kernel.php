@@ -13,8 +13,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->call(function () {
-            app('App\Http\Controllers\LessonController')->autoSchedule();
+            app('App\Http\Controllers\LessonController')->autoSchedule();  
         })->everyMinute();
+
+        $schedule->command('app:class-issue')->daily();
+        $schedule->command('app:video-issues')->daily();
     }
 
     /**
